@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-"" SIT DSC 2302 (2023) lab05 Inventory Performance Simulaton Tool (Simulation algo)
+"" SIT DSC 2302 (2023) lab05 Inventory Performance Simulation Tool (Simulation algo)
 """
 
 # Step 0:
 # Create the Main GUI Window --------------------------------------------------
-
 import tkinter as tk
 import random
-import time
-
-from tkinter import TclError, ttk, Text
-from tkinter import *
+from tkinter import TclError, ttk, Text, messagebox
 from tkinter import filedialog as fd
-
 from tkinter.messagebox import showerror, showwarning, showinfo
 import pandas as pd
-from pandas.tseries.offsets import DateOffset
-import numpy as np
 
-from datetime import date, datetime
-from dateutil.relativedelta import relativedelta
+
+# To check that user enters integer for glOOOOBAL VARIABLE
+def validate_integer(input_value):
+    if input_value == "" or input_value.isdigit():
+        return True
+    else:
+        messagebox.showerror("Invalid Input", "Please enter an integer.")
+        return False
 
 # main Window
 MainWindow = tk.Tk()
-MainWindow.title('Inventory Performance Simulaiton')
+MainWindow.title('Inventory Performance Simulation')
 MainWindow.geometry("910x450+50+50")
 MainWindow.resizable(True, True)
 
@@ -33,11 +32,11 @@ TotalSKU = 20
 df1 = pd.DataFrame()
 dfPolicy = pd.DataFrame()
 
+validate_cmd = (MainWindow.register(validate_integer), '%P')
+
 ROPVar = tk.StringVar()
 OrderQtyVar = tk.StringVar()
 Record_values = pd.Series()
-
-# ----------------
 
 # Step 1:
 # Create NoteBook  ------------------------------------------------------------
@@ -171,14 +170,11 @@ for i in range(TotalSKU):
     ViewTarget.insert('', tk.END, iid=i + 1, text="", values=(i + 1, "", "", "", "", "", ""))
 
 ViewTarget.pack(ipadx=20, ipady=20, anchor=tk.CENTER, fill=tk.BOTH, expand=True)
-
 # Modify policy for what-if analysis
 
 
 # Step 5:
 # Create treeview for simulation result ---------------------------------------
-
-
 ColumnSim = ('No', 'SKU Code', 'SKU Name', "ROP", "Order Qty", "Predicted Turns", "Predicted Fill Rate", \
              "Predicted Inventory Position", "Predicted On Hand", "Predicted Open Order")
 
@@ -257,11 +253,11 @@ ViewSim.bind('<<TreeviewSelect>>', ResultItem_selected)
 
 # add two labels and two Entry boxes
 ttk.Label(FrameSim, text="New ROP:").pack(padx=5, ipadx=2, ipady=2, side=tk.LEFT, expand=False)
-ROPEntry = ttk.Entry(FrameSim, textvariable=ROPVar)
+ROPEntry = ttk.Entry(FrameSim, textvariable=ROPVar, validate='key', validatecommand=validate_cmd)
 ROPEntry.pack(side=tk.LEFT, expand=False)
 
 ttk.Label(FrameSim, text="New Order Qty:").pack(padx=10, ipadx=2, ipady=2, side=tk.LEFT, expand=False)
-OrderQtyEntry = ttk.Entry(FrameSim, textvariable=OrderQtyVar)
+OrderQtyEntry = ttk.Entry(FrameSim, textvariable=OrderQtyVar, validate='key', validatecommand=validate_cmd)
 OrderQtyEntry.pack(side=tk.LEFT, expand=False)
 
 # add a button to save new policy using the data in the Entry boxes
